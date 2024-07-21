@@ -1,0 +1,7 @@
+Django==5.0.7
+psycopg==3.2.1
+psycopg-binary==3.2.1
+djangorestframework==3.15.2
+markdown==3.6
+django-filter==24.2
+dotenv==1.0.1
