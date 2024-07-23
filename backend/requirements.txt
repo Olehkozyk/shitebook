@@ -6,3 +6,4 @@ markdown==3.6
 django-filter==24.2
 python-dotenv==1.0.1
 cloudinary==1.40.0
+drf-yasg==1.21.7
