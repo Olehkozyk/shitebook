@@ -4,4 +4,5 @@ psycopg-binary==3.2.1
 djangorestframework==3.15.2
 markdown==3.6
 django-filter==24.2
-dotenv==1.0.1
+python-dotenv==1.0.1
+cloudinary==1.40.0
