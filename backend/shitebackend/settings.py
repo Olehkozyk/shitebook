@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'user',
     'posts',
+    'chats',
     'drf_yasg'
 ]
 
