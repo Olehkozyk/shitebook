@@ -8,6 +8,8 @@ import ChatIcon from '@/public/icons-navbar/chat-icon.svg';
 import AccountIcon from '@/public/icons-navbar/account-icon.svg';
 import PostsIcon from '@/public/icons-navbar/icon-posts.svg';
 import LogoutIcon from '@/public/icons-navbar/logout-icon.svg';
+import SearchIcon from '@/public/icons-navbar/search-icon.svg';
+import FriendsIcon from '@/public/icons-navbar/friends-icon.svg';
 const NavBar = () => {
     const router = useRouter();
 
@@ -35,32 +37,44 @@ const NavBar = () => {
                 <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
                     <ul className="space-y-2 font-medium">
                         <li className={styles.li}>
+                            <Link className={styles.link} href="/search">
+                                <SearchIcon className={styles.icon}/>
+                                <span className={styles.title}>Search</span>
+                            </Link>
+                        </li>
+                        <li className={styles.li}>
                             <Link className={styles.link} href="/">
-                               <StoreIcon className={styles.icon} />
+                                <StoreIcon className={styles.icon}/>
                                 <span className={styles.title}>Stories</span>
                             </Link>
                         </li>
-                         <li className={styles.li}>
-                            <Link className={styles.link} href="/chats">
-                                <ChatIcon className={styles.icon} />
-                                <span className={styles.title}>Chats</span>
-                            </Link>
-                        </li>
-                         <li className={styles.li}>
-                            <Link className={styles.link} href="/account">
-                                <AccountIcon className={styles.icon} />
-                                <span className={styles.title}>Account</span>
-                            </Link>
-                        </li>
-                         <li className={styles.li}>
+                        <li className={styles.li}>
                             <Link className={styles.link} href="/posts">
-                                <PostsIcon className={styles.icon} />
+                                <PostsIcon className={styles.icon}/>
                                 <span className={styles.title}>Posts</span>
                             </Link>
                         </li>
-                         <li className={styles.li}>
+                        <li className={styles.li}>
+                            <Link className={styles.link} href="/chats">
+                                <ChatIcon className={styles.icon}/>
+                                <span className={styles.title}>Chats</span>
+                            </Link>
+                        </li>
+                        <li className={styles.li}>
+                            <Link className={styles.link} href="/friends">
+                                <FriendsIcon className={styles.icon}/>
+                                <span className={styles.title}>Friends</span>
+                            </Link>
+                        </li>
+                        <li className={styles.li}>
+                            <Link className={styles.link} href="/account">
+                                <AccountIcon className={styles.icon}/>
+                                <span className={styles.title}>Account</span>
+                            </Link>
+                        </li>
+                        <li className={styles.li}>
                             <button className={styles.link} onClick={handleLogout}>
-                                <LogoutIcon className={styles.icon} />
+                                <LogoutIcon className={styles.icon}/>
                                 <span className={styles.title}>Logout</span>
                             </button>
                         </li>
