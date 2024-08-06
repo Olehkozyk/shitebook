@@ -1,9 +1,21 @@
 from django.urls import path
-from .views import PostListView, PostCreateView, PostRetrieveView, PostUpdateView, PostDeleteView
+from .views import (
+    PostListUserView,
+    PostListView,
+    PostCreateView,
+    PostRetrieveView,
+    PostUpdateView,
+    PostDeleteView, PostCommentView, PostLikeView,
+)
+
 urlpatterns = [
     # Get List #GET
-    path('/', PostListView.as_view(), name='post-list'),
+    path('/', PostListUserView.as_view(), name='post-list-user'),
+    path('/list/', PostListView.as_view(), name='post-list'),
 
+    path('/<int:post_id>/comments/', PostCommentView.as_view(), name='post-comments'),
+
+    path('/<int:post_id>/like/', PostLikeView.as_view(), name='post-like'),
     # Create view #POST
     path('/create/', PostCreateView.as_view(), name='post-create'),
 

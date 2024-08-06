@@ -1,8 +1,14 @@
 from rest_framework.permissions import AllowAny
+from django_filters import rest_framework as filters
 from rest_framework.permissions import IsAuthenticated
+
+from .filters import UserFilter
 from .models import UserProfile
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
+from django.contrib.auth.models import User
+
+from .pagination import CustomPaginationUsers
 from .serializers import (
     LoginSerializer,
     UserProfilesSerializer,
@@ -38,7 +44,7 @@ class UserProfileUpdateView(UpdateAPIView):
     queryset = UserProfile.objects.all()
 
 
-class UserLogin(generics.GenericAPIView):
+class UserLoginView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
 
@@ -59,7 +65,7 @@ class UserLogin(generics.GenericAPIView):
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserRegister(generics.CreateAPIView):
+class UserRegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
 
@@ -92,3 +98,13 @@ class UserDetailView(generics.RetrieveAPIView):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
+
+class UserListView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
+    pagination_class = CustomPaginationUsers
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = UserFilter
+
+    def get_queryset(self):
+        return User.objects.all().select_related('profile')

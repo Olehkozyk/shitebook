@@ -1,7 +1,6 @@
 from django.db.models import Q
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from rest_framework.exceptions import ValidationError
 from .models import UserProfile
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -14,6 +13,11 @@ class UserProfilesSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['user']
 
+class UserSerializer(serializers.ModelSerializer):
+    profile = UserProfilesSerializer()
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile']
 
 class LoginSerializer(serializers.Serializer):
     login = serializers.CharField()
@@ -41,7 +45,6 @@ class LoginSerializer(serializers.Serializer):
                 raise serializers.ValidationError('Invalid credentials.')
         else:
             raise serializers.ValidationError('Must include "username" and "password".')
-
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -94,9 +97,3 @@ class RegisterSerializer(serializers.ModelSerializer):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'first_name', 'last_name')
