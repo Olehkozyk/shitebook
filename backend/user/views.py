@@ -1,13 +1,11 @@
 from rest_framework.permissions import AllowAny
 from django_filters import rest_framework as filters
 from rest_framework.permissions import IsAuthenticated
-
 from .filters import UserFilter
 from .models import UserProfile
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-
 from .pagination import CustomPaginationUsers
 from .serializers import (
     LoginSerializer,
@@ -16,7 +14,6 @@ from .serializers import (
     UserSerializer
 )
 from rest_framework import status, generics
-
 from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
@@ -25,18 +22,10 @@ from rest_framework.generics import (
 
 UserModel = get_user_model()
 
-
 # List view
 class UserProfileListView(ListAPIView):
     serializer_class = UserProfilesSerializer
     queryset = UserProfile.objects.all()
-
-
-# Retrieve view
-class UserProfileRetrieveView(RetrieveAPIView):
-    serializer_class = UserProfilesSerializer
-    queryset = UserProfile.objects.all()
-
 
 # Update view
 class UserProfileUpdateView(UpdateAPIView):
@@ -85,8 +74,21 @@ class UserRegisterView(generics.CreateAPIView):
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
-
 class UserDetailView(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        user_id = kwargs.get('pk')
+        try:
+            user = User.objects.select_related('profile').get(id=user_id)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class CurrentUserDetailView(generics.RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserSerializer
 

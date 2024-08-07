@@ -5,7 +5,7 @@ from .views import (
     PostCreateView,
     PostRetrieveView,
     PostUpdateView,
-    PostDeleteView, PostCommentView, PostLikeView,
+    PostDeleteView, PostCommentView, PostLikeView, CommentCreateView,
 )
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
     path('/list/', PostListView.as_view(), name='post-list'),
 
     path('/<int:post_id>/comments/', PostCommentView.as_view(), name='post-comments'),
+    path('/comment/create/', CommentCreateView.as_view(), name='comment-create'),
 
     path('/<int:post_id>/like/', PostLikeView.as_view(), name='post-like'),
     # Create view #POST

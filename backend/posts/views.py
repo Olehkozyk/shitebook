@@ -45,6 +45,19 @@ class PostListView(ListAPIView):
         return Post.objects.all().select_related('author__profile')
 
 
+class CommentCreateView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentSerializer
+
+    def perform_create(self, serializer):
+        post_id = self.request.data.get('post')
+        content = self.request.data.get('content')
+        serializer.save(author=self.request.user, post=Post.objects.get(id=post_id), content=content)
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response(response.data, status=status.HTTP_201_CREATED)
+
 class PostCommentView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
