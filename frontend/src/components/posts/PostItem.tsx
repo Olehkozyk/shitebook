@@ -7,14 +7,13 @@ import LikeIcon from "@/public/icon-shite.svg";
 import CommentsIcon from "@/public/icon-comments.svg";
 import Cookies from "js-cookie";
 
-const PostItem = ({post}) => {
+const PostItem = ({post, onOpenComment }) => {
     if (!post) {
         return <p>No Post</p>;
     }
     const [isLike, setIsLike] = useState(post.is_liked);
     const [countLike, setCountLike] = useState(post.likes_count);
 
-    console.log(post);
     const like = async () => {
         const token = Cookies.get('shite_access_token');  // Получаем токен из куки
         try {
@@ -26,7 +25,6 @@ const PostItem = ({post}) => {
                 })
             });
             const data = await response.json();
-            console.log(data);
             if (response.ok && data.status) {
                 setIsLike(data.is_like)
                 setCountLike(data.likes_count)
@@ -80,7 +78,9 @@ const PostItem = ({post}) => {
                                 <LikeIcon className={`h-12 w-12  ${isLike ? 'text-red-800' : ''}`}/>
                                 <span>{countLike}</span>
                             </div>
-                            <div className="no-underline cursor-pointer flex items-center flex-col">
+                            <div
+                                onClick={() => onOpenComment(post.id)}
+                                className="no-underline cursor-pointer flex items-center flex-col">
                                 <CommentsIcon className={`h-12 w-12 max-h-7 mb-1`}/>
                                 <span>{post.comments_count}</span>
                             </div>

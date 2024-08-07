@@ -7,6 +7,7 @@ import PostsIcon from '@/public/icons-navbar/icon-posts.svg';
 import {formatDate} from "@/utils/formateDate";
 import Image from "next/image";
 import PostsList from "@/components/posts/PostsList";
+import Link from "next/link";
 
 type FormData = {
     search: string;
@@ -43,7 +44,6 @@ const SearchComponent = () => {
                 })
                 response = await response.json();
                 if (response.status) {
-                    console.log(response)
                     switch (filterBy) {
                         case 'posts':
                             setResultsUser([])
@@ -152,7 +152,7 @@ const SearchComponent = () => {
             </form>
             {errors.root && <span>{errors.root.message}</span>}
             {resultsPosts.length > 0 && (
-               <PostsList posts={resultsPosts} />
+                <PostsList posts={resultsPosts}/>
             )}
 
             {resultsUser.length > 0 && (
@@ -161,7 +161,7 @@ const SearchComponent = () => {
                         <ul role="list" className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
                             {resultsUser.map((user) => (
                                 <li key={user.id}>
-                                    <div className="flex items-center gap-x-6">
+                                    <Link className="flex items-center gap-x-6" href={'user/' + user.id}>
                                         {user.profile.avatar_url ? (
                                             <Image
                                                 src={user.profile.avatar_url}
@@ -181,7 +181,7 @@ const SearchComponent = () => {
                                                 {user.first_name} {user.last_name}
                                             </p>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
