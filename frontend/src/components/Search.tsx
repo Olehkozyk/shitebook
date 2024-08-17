@@ -8,6 +8,7 @@ import {formatDate} from "@/utils/formateDate";
 import Image from "next/image";
 import PostsList from "@/components/posts/PostsList";
 import Link from "next/link";
+import ListUsers from "@/components/user/ListUsers";
 
 type FormData = {
     search: string;
@@ -89,35 +90,39 @@ const SearchComponent = () => {
     return (
         <>
             <form className="mx-auto">
-                <ul className="items-center mb-4 w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                    <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                        <div className="flex items-center ps-3">
+                <ul className="hidden mb-4 text-sm font-medium text-center text-gray-500 rounded-lg shadow sm:flex dark:divide-gray-700 dark:text-gray-400">
+                    <li className="w-full focus-within:z-10 cursor-pointer ">
+                        <div
+                            className={`flex items-center w-full text-gray-900 bg-gray-100 border-r border-gray-200 dark:border-gray-700 rounded-s-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:hover:text-white dark:bg-gray-${filter === "posts" ? '700' : '800'} dark:hover:bg-gray-700`}
+                            aria-current="page">
                             <input
                                 id="horizontal-list-radio-license"
                                 type="radio"
                                 value="posts"
                                 checked={filter === "posts"}
                                 onChange={handleFilterChange}
-                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                                className="hidden"
                             />
                             <label htmlFor="horizontal-list-radio-license"
-                                   className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                   className="p-4 ms-2 text-sm font-medium cursor-pointer text-gray-900 dark:text-gray-300 w-full block">
                                 Publication
                             </label>
                         </div>
                     </li>
-                    <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
-                        <div className="flex items-center ps-3">
+                    <li className="w-full focus-within:z-10 cursor-pointer">
+                        <div
+                            className={`flex items-center w-full text-gray-900 bg-gray-100 border-r border-gray-200 dark:border-gray-700 rounded-e-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:hover:text-white dark:bg-gray-${filter === "users" ? '700' : '800'} dark:hover:bg-gray-700`}
+                            aria-current="page">
                             <input
                                 id="horizontal-list-radio-id"
                                 type="radio"
                                 value="users"
                                 checked={filter === "users"}
                                 onChange={handleFilterChange}
-                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                                className="hidden"
                             />
                             <label htmlFor="horizontal-list-radio-id"
-                                   className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                   className="p-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 w-full block cursor-pointer">
                                 People
                             </label>
                         </div>
@@ -151,43 +156,8 @@ const SearchComponent = () => {
                 </div>
             </form>
             {errors.root && <span>{errors.root.message}</span>}
-            {resultsPosts.length > 0 && (
-                <PostsList posts={resultsPosts}/>
-            )}
-
-            {resultsUser.length > 0 && (
-                <div className="py-5 sm:py-6">
-                    <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
-                        <ul role="list" className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
-                            {resultsUser.map((user) => (
-                                <li key={user.id}>
-                                    <Link className="flex items-center gap-x-6" href={'user/' + user.id}>
-                                        {user.profile.avatar_url ? (
-                                            <Image
-                                                src={user.profile.avatar_url}
-                                                width={50}
-                                                height={50}
-                                                className="h-12 w-12 rounded-full"
-                                                alt={user.username}
-                                            />
-                                        ) : (
-                                            <PostsIcon className="h-16 w-16 rounded-full"/>
-                                        )}
-                                        <div>
-                                            <h3 className="text-base text-white font-semibold leading-7 tracking-tight">
-                                                {user.username}
-                                            </h3>
-                                            <p className="text-sm font-semibold leading-6 text-indigo-600">
-                                                {user.first_name} {user.last_name}
-                                            </p>
-                                        </div>
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-            )}
+            {resultsPosts.length > 0 && (<PostsList posts={resultsPosts}/>)}
+            {resultsUser.length > 0 && (<ListUsers users={resultsUser}/>)}
         </>
     )
 };

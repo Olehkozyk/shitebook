@@ -3,11 +3,10 @@ import {NextResponse} from "next/server";
 export async function GET(request: Request) {
     try {
         const url = new URL(request.url);
-        const token = url.searchParams.get('token');
-        const userId = url.searchParams.get('userId');
+        const token = url.searchParams.get('token') ?? '';
         if (!token) throw new Error('Token is missing')
-        if (!userId) throw new Error('User id is missing')
-        let response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile/${userId}/`, {
+        const urlRequest = `${process.env.NEXT_PUBLIC_API_URL}/users/friend-list/`;
+        let response = await fetch(urlRequest, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -16,10 +15,7 @@ export async function GET(request: Request) {
         });
         response = await response.json();
         if (!response) throw new Error('Failed to fetch data')
-        return NextResponse.json({
-            status: true,
-            data: response
-        });
+        return NextResponse.json(response);
     } catch (error) {
         return NextResponse.json({
             status: false,
