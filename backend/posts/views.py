@@ -42,7 +42,8 @@ class PostListView(ListAPIView):
     filterset_class = PostsFilter
 
     def get_queryset(self):
-        return Post.objects.all().select_related('author__profile')
+        current_user = self.request.user
+        return Post.objects.all().select_related('author__profile').exclude(id=current_user.id)
 
 
 class CommentCreateView(CreateAPIView):

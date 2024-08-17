@@ -1,11 +1,14 @@
 from django.db.models import Q
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import UserProfile
+
+from chats.models import Chat
+from .models import UserProfile, FriendRequest, UserFriend
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
 UserModel = get_user_model()
+
 
 class UserProfilesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,11 +16,43 @@ class UserProfilesSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['user']
 
+
 class UserSerializer(serializers.ModelSerializer):
     profile = UserProfilesSerializer()
+    friend_request_sent = serializers.SerializerMethodField()
+    chat_id = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile', 'friend_request_sent', 'chat_id']
+
+    def get_friend_request_sent(self, obj):
+        current_user = self.context['request'].user
+        return FriendRequest.objects.filter(from_user=current_user, to_user=obj).exists()
+
+    def get_chat_id(self, obj):
+        current_user = self.context['request'].user
+        chat = Chat.objects.filter(
+            (Q(user1=current_user) & Q(user2=obj)) |
+            (Q(user1=obj) & Q(user2=current_user))
+        ).first()  # Use `first()` to get a single chat instance or None
+        return chat.id if chat else None
+
+class UserSerializerRequestFriend(serializers.ModelSerializer):
+    profile = UserProfilesSerializer()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile', ]
+
+class FriendRequestSerializer(serializers.ModelSerializer):
+    from_user = UserSerializerRequestFriend()
+    to_user = UserSerializerRequestFriend()
+
+    class Meta:
+        model = FriendRequest
+        fields = ['from_user', 'to_user', 'timestamp', 'accepted',]
+
 
 class LoginSerializer(serializers.Serializer):
     login = serializers.CharField()

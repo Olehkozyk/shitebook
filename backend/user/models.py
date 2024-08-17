@@ -5,6 +5,9 @@ from django.dispatch import receiver
 from cloudinary.models import CloudinaryField
 from cloudinary.utils import cloudinary_url
 
+from chats.models import Chat
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     birth_date = models.DateField(null=True, blank=True)
@@ -38,8 +41,14 @@ class FriendRequest(models.Model):
     def accept(self):
         self.accepted = True
         self.save()
-        self.from_user.user_friends.friends.add(self.to_user.user_friends)
-        self.to_user.user_friends.friends.add(self.from_user.user_friends)
+        from_user_friends = self.from_user.user_friends
+        to_user_friends = self.to_user.user_friends
+
+        from_user_friends.friends.add(self.to_user)
+        to_user_friends.friends.add(self.from_user)
+
+        Chat.objects.create(user1=self.from_user, user2=self.to_user)
+
         self.delete()
 
     def reject(self):
@@ -49,7 +58,7 @@ class FriendRequest(models.Model):
 
 class UserFriend(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_friends')
-    friends = models.ManyToManyField('self', symmetrical=False, related_name='friend_of', blank=True)
+    friends = models.ManyToManyField(User, related_name='friend_of', blank=True)
     friend_requests = models.ManyToManyField(FriendRequest, related_name='user_friend_requests', blank=True)
 
     def __str__(self):
