@@ -38,6 +38,21 @@ export default function Friends() {
 
         token && fetchFriendsList() && fetchRequestFriendsList();
     }, []);
+
+    const addRemoveRequestFriend = async (id, addRequest = true,) => {
+        if (!id) return;
+        const route = addRequest ? '/add-friend/' : '/remove-request-friend/';
+        try {
+            let response = await fetch(`/api/user/friends${route}`, {
+                method: 'POST',
+                body: JSON.stringify({token, userId: id}),
+            })
+            response = await response.json();
+            if (response.status) setListRequestFriend(listRequestFriend.map(item => item.from_user.id !== id));
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return <>
         <div className="p-4 sm:ml-64">
             <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
@@ -78,7 +93,7 @@ export default function Friends() {
                     </li>
                 </ul>
                 {listFriend.length > 0 && friendShow === 'friend' && (<ListUsers users={listFriend}/>)}
-                {listRequestFriend.length > 0 && friendShow === 'request' &&  (<ListRequestUsers users={listRequestFriend} />)}
+                {listRequestFriend.length > 0 && friendShow === 'request' &&  (<ListRequestUsers addRemoveRequestFriend={addRemoveRequestFriend} users={listRequestFriend} />)}
             </div>
         </div>
     </>

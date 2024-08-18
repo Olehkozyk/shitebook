@@ -3,27 +3,12 @@ import Link from "next/link";
 import Image from "next/image";
 import PostsIcon from "@/public/icons-navbar/icon-posts.svg";
 import IconMark from "@/public/icon-mark.svg";
+import IconClose from "@/public/icon-close.svg";
 import Cookies from "js-cookie";
 
 
-const ListRequestUsers = ({users}) => {
-    const token = Cookies.get('shite_access_token');
-    const acceptFriend = async (id) => {
-        if (!id) return;
+const ListRequestUsers = ({users, addRemoveRequestFriend}) => {
 
-        try {
-            let response = await fetch(`/api/user/friends/accept-friend/`, {
-                method: 'POST',
-                body: JSON.stringify({token, userId: id}),
-            })
-            response = await response.json();
-            if (response.status) {
-                console.log(response);
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
     return (
         <>
             <div className="py-5 sm:py-6">
@@ -45,16 +30,22 @@ const ListRequestUsers = ({users}) => {
                                     )}
                                 </Link>
                                 <div>
-                                    <h3 className="text-base text-white font-semibold leading-7 tracking-tight">
+                                    <h3 className="text-base text-white font-semibold leading-7 tracking-tight mb-3">
                                         {user.from_user.username}
                                     </h3>
                                     <p className="text-sm font-semibold leading-6 text-indigo-600">
                                         {user.from_user.first_name} {user.from_user.last_name}
                                     </p>
-                                    <button onClick={() => acceptFriend(user.from_user.id)}>
-                                        <IconMark className="text-green-600 w-5"/>
+                                    <button
+                                        className="text-sm font-semibold leading-6 text-green-600 flex items-center mb-4"
+                                        onClick={() => addRemoveRequestFriend(user.from_user.id)}>
+                                        Accept friend<IconMark className="text-green-600 w-5 ms-4"/>
                                     </button>
-
+                                    <button
+                                        className="text-sm font-semibold leading-6 text-red-800 flex items-center"
+                                        onClick={() => addRemoveRequestFriend(user.from_user.id, false)}>
+                                        Remove request<IconClose className="text-red-800 w-5 ms-4"/>
+                                    </button>
                                 </div>
 
                             </li>
