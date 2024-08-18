@@ -185,11 +185,12 @@ class UserRemoveFriendRequestView(generics.GenericAPIView):
 
     def delete(self, request, *args, **kwargs):
         to_user_id = request.data.get('user_id')
+
         if not to_user_id:
             return Response({'status': False, 'error': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            to_user = User.objects.get(id=to_user_id)
+            to_user = User.objects.get(id=to_user_idk)
         except User.DoesNotExist:
             return Response({'status': False, 'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
