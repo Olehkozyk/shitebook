@@ -65,6 +65,7 @@ class IsFriendView(generics.GenericAPIView):
 
         return Response({'status': True, 'is_friend': is_friend}, status=status.HTTP_200_OK)
 
+
 class RemoveFriendView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
@@ -92,11 +93,10 @@ class RemoveFriendView(generics.GenericAPIView):
         except Exception as e:
             # Log the exception for debugging
             print(f"Error removing friend: {e}")
-            return Response({'status': False, 'error': f'Internal server error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'status': False, 'error': f'Internal server error: {str(e)}'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({'status': True, 'message': 'Friend removed successfully'}, status=status.HTTP_200_OK)
-
-
 
 
 class AcceptFriendRequestView(generics.GenericAPIView):
@@ -179,22 +179,27 @@ class FriendListView(generics.ListAPIView):
         return Response({'status': True, 'data': serializer.data})
 
 
-
 class UserRemoveFriendRequestView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
     def delete(self, request, *args, **kwargs):
         to_user_id = request.data.get('user_id')
+        from_user_send = request.data.get('from_user')
 
         if not to_user_id:
             return Response({'status': False, 'error': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            to_user = User.objects.get(id=to_user_idk)
+            user1 = User.objects.get(id=to_user_id)
         except User.DoesNotExist:
             return Response({'status': False, 'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-        from_user = request.user
+        user2 = request.user
+        from_user = user1
+        to_user = user2
+        if from_user_send:
+            from_user = user2
+            to_user = user1
 
         try:
             friend_request = FriendRequest.objects.get(from_user=from_user, to_user=to_user)
