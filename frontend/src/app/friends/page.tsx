@@ -8,47 +8,59 @@ export default function Friends() {
     const [listFriend, setListFriend] = useState([]);
     const [listRequestFriend, setListRequestFriend] = useState([]);
     const token = Cookies.get('shite_access_token');
+
+
+    const fetchFriendsList = async () => {
+        try {
+            let response = await fetch(`/api/user/friends/friends-list?token=${token}`, {method: 'GET'})
+            response = await response.json();
+            if (response.status) {
+                setListFriend(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+    const fetchRequestFriendsList = async () => {
+        console.log('fetchRequestFriendsList')
+        try {
+            let response = await fetch(`/api/user/friends/request-friend?token=${token}`, {method: 'GET'})
+            response = await response.json();
+            if (response.status) {
+                setListRequestFriend(response.data)
+                console.log(response.data);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+    };
+    const toggleTab = async (tab = '') => {
+        if(tab === 'friend') {
+            await fetchFriendsList()
+        } else if(tab === 'request') {
+            await fetchRequestFriendsList()
+        }
+        setFriendShow(tab);
+    }
     useEffect(() => {
-        const fetchFriendsList = async () => {
-            try {
-                let response = await fetch(`/api/user/friends/friends-list?token=${token}`, {method: 'GET'})
-                response = await response.json();
-                if (response.status) {
-                    setListFriend(response.data)
-                }
-
-            } catch (error) {
-                console.log(error)
-            }
-        };
-
-        const fetchRequestFriendsList = async () => {
-            try {
-                let response = await fetch(`/api/user/friends/request-friend?token=${token}`, {method: 'GET'})
-                response = await response.json();
-                if (response.status) {
-                    setListRequestFriend(response.data)
-                    console.log(response.data);
-                }
-            } catch (error) {
-                console.log(error)
-            }
-
-        };
-
         token && fetchFriendsList() && fetchRequestFriendsList();
     }, []);
 
     const addRemoveRequestFriend = async (id, addRequest = true,) => {
         if (!id) return;
-        const route = addRequest ? '/add-friend/' : '/remove-request-friend/';
+        const route = addRequest ? '/accept-friend/' : '/remove-request-friend/';
         try {
             let response = await fetch(`/api/user/friends${route}`, {
                 method: 'POST',
-                body: JSON.stringify({token, userId: id}),
+                body: JSON.stringify({token, userId: id, fromUser: false}),
             })
             response = await response.json();
-            if (response.status) setListRequestFriend(listRequestFriend.map(item => item.from_user.id !== id));
+            if (response.status) {
+                setListRequestFriend(listRequestFriend.filter(item => item && item.from_user.id !== id));
+            }
         } catch (error) {
             console.log(error)
         }
@@ -65,7 +77,7 @@ export default function Friends() {
                                 id="horizontal-list-radio-license"
                                 type="radio"
                                 checked={friendShow === 'friend'}
-                                onChange={() => setFriendShow('friend')}
+                                onChange={() => toggleTab('friend')}
                                 className="hidden"
                             />
                             <label htmlFor="horizontal-list-radio-license"
@@ -82,7 +94,7 @@ export default function Friends() {
                                 id="horizontal-list-radio-id"
                                 type="radio"
                                 checked={friendShow === 'request'}
-                                onChange={() => setFriendShow('request')}
+                                onChange={() => toggleTab('request')}
                                 className="hidden"
                             />
                             <label htmlFor="horizontal-list-radio-id"
@@ -92,8 +104,8 @@ export default function Friends() {
                         </div>
                     </li>
                 </ul>
-                {listFriend.length > 0 && friendShow === 'friend' && (<ListUsers users={listFriend}/>)}
-                {listRequestFriend.length > 0 && friendShow === 'request' &&  (<ListRequestUsers addRemoveRequestFriend={addRemoveRequestFriend} users={listRequestFriend} />)}
+                {friendShow === 'friend' && (<ListUsers users={listFriend}/>)}
+                {friendShow === 'request' &&  (<ListRequestUsers addRemoveRequestFriend={addRemoveRequestFriend} users={listRequestFriend} />)}
             </div>
         </div>
     </>

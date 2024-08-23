@@ -12,7 +12,8 @@ export async function POST(request: Request) {
                 'Authorization': `Bearer ${data.token}`
             },
             body: JSON.stringify({
-                user_id: data.userId
+                user_id: data.userId,
+                from_user: data.fromUser ?? false,
             }),
         });
         if (!response.ok) {

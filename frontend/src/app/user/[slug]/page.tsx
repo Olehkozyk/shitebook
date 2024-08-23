@@ -65,7 +65,7 @@ export default function Page({params}: { params: { slug: string } }) {
         try {
             let response = await fetch(`/api/user/friends${route}`, {
                 method: 'POST',
-                body: JSON.stringify({token, userId: id}),
+                body: JSON.stringify({token, userId: id, fromUser: true}),
             })
             response = await response.json();
             if (response.status) setRequestFriend(addRequest)
