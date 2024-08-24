@@ -3,7 +3,7 @@ from rest_framework import status
 from .filters import PostsFilter
 from .models import Post, Comment
 from .pagination import PaginationPosts, CommentPagination
-from .serializers import PostsSerializer, CommentSerializer
+from .serializers import PostsSerializer, CommentSerializer, CreatePostsSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
@@ -20,7 +20,11 @@ from rest_framework.generics import (
 
 # Create view
 class PostCreateView(CreateAPIView):
-    serializer_class = PostsSerializer
+    permission_classes = [IsAuthenticated]
+    serializer_class = CreatePostsSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 # List view

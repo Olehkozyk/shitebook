@@ -3,6 +3,20 @@ from .models import Post, Comment
 from user.serializers import UserSerializer
 
 
+class CreatePostsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = [
+            'id',
+            'title',
+            'description',
+            'image',
+            'image_url'
+        ]
+        read_only_fields = ['author']
+
+
+
 class PostsSerializer(serializers.ModelSerializer):
     author = UserSerializer()
     comments_count = serializers.SerializerMethodField()
