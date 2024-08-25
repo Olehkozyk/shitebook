@@ -65,6 +65,7 @@ class IsFriendView(generics.GenericAPIView):
 
         return Response({'status': True, 'is_friend': is_friend}, status=status.HTTP_200_OK)
 
+
 class RemoveFriendView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
@@ -92,11 +93,10 @@ class RemoveFriendView(generics.GenericAPIView):
         except Exception as e:
             # Log the exception for debugging
             print(f"Error removing friend: {e}")
-            return Response({'status': False, 'error': f'Internal server error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'status': False, 'error': f'Internal server error: {str(e)}'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({'status': True, 'message': 'Friend removed successfully'}, status=status.HTTP_200_OK)
-
-
 
 
 class AcceptFriendRequestView(generics.GenericAPIView):
@@ -177,7 +177,6 @@ class FriendListView(generics.ListAPIView):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response({'status': True, 'data': serializer.data})
-
 
 
 class UserRemoveFriendRequestView(generics.GenericAPIView):
