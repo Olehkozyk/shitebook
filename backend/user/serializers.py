@@ -1,14 +1,12 @@
 from django.db.models import Q
 from rest_framework import serializers
 from django.contrib.auth.models import User
-
 from chats.models import Chat
 from .models import UserProfile, FriendRequest, UserFriend
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
 UserModel = get_user_model()
-
 
 class UserProfilesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,18 +30,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_chat_id(self, obj):
         current_user = self.context['request'].user
-        chat = Chat.objects.filter(
-            (Q(user1=current_user) & Q(user2=obj)) |
-            (Q(user1=obj) & Q(user2=current_user))
-        ).first()  # Use `first()` to get a single chat instance or None
+        chat = Chat.objects.filter(participants=current_user).filter(participants=obj).distinct().first()
         return chat.id if chat else None
+
 
 class UserSerializerRequestFriend(serializers.ModelSerializer):
     profile = UserProfilesSerializer()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile', ]
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile']
+
 
 class FriendRequestSerializer(serializers.ModelSerializer):
     from_user = UserSerializerRequestFriend()
@@ -51,7 +48,7 @@ class FriendRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FriendRequest
-        fields = ['from_user', 'to_user', 'timestamp', 'accepted',]
+        fields = ['from_user', 'to_user', 'timestamp', 'accepted']
 
 
 class LoginSerializer(serializers.Serializer):

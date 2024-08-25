@@ -32,6 +32,7 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class FriendRequest(models.Model):
     from_user = models.ForeignKey(User, related_name='sent_friend_requests', on_delete=models.CASCADE)
     to_user = models.ForeignKey(User, related_name='received_friend_requests', on_delete=models.CASCADE)
@@ -53,8 +54,10 @@ class FriendRequest(models.Model):
 
     def reject(self):
         self.delete()
+
     def __str__(self):
         return f"{self.from_user} -> {self.to_user}"
+
 
 class UserFriend(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_friends')
@@ -63,6 +66,7 @@ class UserFriend(models.Model):
 
     def __str__(self):
         return self.user.username
+
 
 @receiver(post_save, sender=User)
 def create_user_profile_and_friends(sender, instance, created, **kwargs):
