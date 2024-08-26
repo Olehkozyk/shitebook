@@ -8,6 +8,7 @@ from rest_framework.generics import (
     UpdateAPIView, # new
     DestroyAPIView, # new
 )
+from rest_framework.permissions import IsAuthenticated
 
 # Create view
 class ChatCreateView(CreateAPIView):
@@ -16,7 +17,10 @@ class ChatCreateView(CreateAPIView):
 # List view
 class ChatListView(ListAPIView):
     serializer_class = ChatSerializer
-    queryset = Chat.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Chat.objects.filter(participants=self.request.user)
 
 # Retrieve view
 class ChatRetrieveView(RetrieveAPIView):
