@@ -2,7 +2,7 @@ from rest_framework.permissions import AllowAny
 from django_filters import rest_framework as filters
 from rest_framework.permissions import IsAuthenticated
 from .filters import UserFilter
-from .models import UserProfile, FriendRequest, UserFriend
+from .models import UserProfile, FriendRequest, UserFriend, Chat
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from django.contrib.auth.models import User
@@ -89,6 +89,10 @@ class RemoveFriendView(generics.GenericAPIView):
             # Remove the friendship from both users
             current_user.user_friends.friends.remove(user_to_remove)
             user_to_remove.user_friends.friends.remove(current_user)
+
+            chat = Chat.objects.filter(participants=current_user).filter(participants=user_to_remove).first()
+            if chat:
+                chat.delete()
 
         except Exception as e:
             # Log the exception for debugging

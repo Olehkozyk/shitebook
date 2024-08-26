@@ -48,8 +48,11 @@ class FriendRequest(models.Model):
         from_user_friends.friends.add(self.to_user)
         to_user_friends.friends.add(self.from_user)
 
-        chat = Chat.objects.create(title=f"Chat between {self.from_user.username} and {self.to_user.username}")
-        chat.participants.add(self.from_user, self.to_user)
+        chat = Chat.objects.filter(participants=self.from_user).filter(participants=self.to_user).first()
+
+        if chat is None:
+            chat = Chat.objects.create(title=f"Chat between {self.from_user.username} and {self.to_user.username}")
+            chat.participants.add(self.from_user, self.to_user)
 
         self.delete()
 
