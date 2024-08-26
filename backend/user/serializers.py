@@ -18,20 +18,20 @@ class UserProfilesSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     profile = UserProfilesSerializer()
     friend_request_sent = serializers.SerializerMethodField()
-    chat_id = serializers.SerializerMethodField()
+    chat = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile', 'friend_request_sent', 'chat_id']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile', 'friend_request_sent', 'chat', ]
 
     def get_friend_request_sent(self, obj):
         current_user = self.context['request'].user
         return FriendRequest.objects.filter(from_user=current_user, to_user=obj).exists()
 
-    def get_chat_id(self, obj):
+    def get_chat(self, obj):
         current_user = self.context['request'].user
         chat = Chat.objects.filter(participants=current_user).filter(participants=obj).distinct().first()
-        return chat.id if chat else None
+        return {'id': chat.id, 'title': chat.title} if chat else None
 
 
 class UserSerializerRequestFriend(serializers.ModelSerializer):
