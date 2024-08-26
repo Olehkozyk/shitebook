@@ -77,7 +77,7 @@ const PostsList = ({posts}) => {
     return (
         <>
             <div className="container my-3 mx-auto">
-                <div className="flex flex-wrap -mx-1 lg:-mx-4">
+                <div className="flex items-stretch flex-wrap -mx-1 lg:-mx-4">
                     {posts.map(post => (
                         <PostItem key={post.id} post={post} currentUser={currentUser} onOpenComment={handleOpenComment} />
                     ))}

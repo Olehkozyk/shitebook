@@ -83,7 +83,7 @@ export default function Friends() {
                             />
                             <label htmlFor="horizontal-list-radio-license"
                                    className="p-4 ms-2 text-sm font-medium cursor-pointer text-gray-900 dark:text-gray-300 w-full block">
-                                Friend
+                                Friends
                             </label>
                         </div>
                     </li>

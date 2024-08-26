@@ -24,8 +24,8 @@ export default function Page() {
   return <>
     <div className="p-4 sm:ml-64">
       <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-        <h2>Publication</h2>
-        <Link href='posts/create' className="font-medium text-primary-600 hover:underline dark:text-primary-500 pe-3">Create</Link>
+        <h2 className='text-xl mb-4'>Publication</h2>
+        <Link href='posts/create' className="font-medium text-primary-600 hover:underline dark:text-primary-500 pe-3">Create New Post</Link>
         <PostsList posts={posts} />
       </div>
     </div>

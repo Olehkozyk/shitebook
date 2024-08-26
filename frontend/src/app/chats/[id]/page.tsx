@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import Cookies from 'js-cookie';
@@ -15,6 +15,7 @@ interface Message {
 const ChatPage: React.FC = () => {
     const { id } = useParams();
     const searchParams = useSearchParams();
+    const router = useRouter();
     const chatTitle = searchParams.get('title');
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState('');
@@ -38,7 +39,10 @@ const ChatPage: React.FC = () => {
         const token = Cookies.get('shite_access_token');
 
         const fetchUserProfile = async () => {
-            if (!token) return;
+            if (!token) {
+                router.push('/login');
+                return;
+            }
 
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile/`, {
@@ -52,14 +56,50 @@ const ChatPage: React.FC = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setCurrentUser(data.data.username);
+                } else {
+                    router.push('/login');
                 }
             } catch (error) {
                 console.error('Error fetching user profile:', error);
+                router.push('/login');
             }
         };
 
         fetchUserProfile();
     }, []);
+
+    useEffect(() => {
+        if (currentUser && id) {
+            const token = Cookies.get('shite_access_token');
+
+            const checkChatAccess = async () => {
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chats/${id}/`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        router.push('/chats');
+                        return;
+                    }
+
+                    const data = await response.json();
+
+                    if (data.errors && data.errors.detail === "No Chat matches the given query.") {
+                        router.push('/chats');
+                    }
+                } catch (error) {
+                    console.error('Error checking chat access:', error);
+                    router.push('/chats');
+                }
+            };
+
+            checkChatAccess();
+        }
+    }, [currentUser, id]);
 
     useEffect(() => {
         if (currentUser && id && !ws.current) {

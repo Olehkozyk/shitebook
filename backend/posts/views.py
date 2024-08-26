@@ -7,13 +7,12 @@ from .serializers import PostsSerializer, CommentSerializer, CreatePostsSerializ
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
-from rest_framework.views import APIView
 from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
     RetrieveAPIView,
-    UpdateAPIView,  # new
-    DestroyAPIView,  # new
+    UpdateAPIView,
+    DestroyAPIView,
     GenericAPIView,
 )
 
@@ -47,7 +46,7 @@ class PostListView(ListAPIView):
 
     def get_queryset(self):
         current_user = self.request.user
-        return Post.objects.all().select_related('author__profile').exclude(id=current_user.id)
+        return Post.objects.exclude(author=current_user).select_related('author__profile')
 
 
 class CommentCreateView(CreateAPIView):
