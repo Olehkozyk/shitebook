@@ -84,7 +84,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'repeat_password', 'email')
+        fields = ['username', 'password', 'repeat_password', 'email']
         extra_kwargs = {
             'password': {'write_only': True},
             'repeat_password': {'write_only': True},
@@ -96,23 +96,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         password = data.get('password')
         repeat_password = data.get('repeat_password')
 
-        if not username:
-            raise serializers.ValidationError({'username': 'This field is required.'})
-        if not email:
-            raise serializers.ValidationError({'email': 'This field is required.'})
-        if not password:
-            raise serializers.ValidationError({'password': 'This field is required.'})
-        if not repeat_password:
-            raise serializers.ValidationError({'repeat_password': 'This field is required.'})
         if password != repeat_password:
-            raise serializers.ValidationError({'password': 'Passwords do not match.'})
+            raise serializers.ValidationError({'repeat_password': 'Passwords do not match.'})
 
         if User.objects.filter(username=username).exists():
-            raise serializers.ValidationError('Username is already taken.')
+            raise serializers.ValidationError({'username': 'Username is already taken.'})
+
         if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError('Email is already taken.')
-        if password != repeat_password:
-            raise serializers.ValidationError('Passwords do not match.')
+            raise serializers.ValidationError({'email': 'Email is already taken.'})
 
         return data
 

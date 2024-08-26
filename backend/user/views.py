@@ -37,12 +37,14 @@ class UserRegisterView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
+
         if serializer.is_valid():
             data = serializer.save()
             response_data = {'status': True, 'data': data}
             return Response(response_data, status=status.HTTP_201_CREATED)
         else:
             response_data = {'status': False, 'errors': serializer.errors}
+            print(serializer.errors)
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
 
