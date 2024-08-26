@@ -7,7 +7,7 @@ import LikeIcon from "@/public/icon-shite.svg";
 import CommentsIcon from "@/public/icon-comments.svg";
 import Cookies from "js-cookie";
 
-const PostItem = ({post, onOpenComment }) => {
+const PostItem = ({post, onOpenComment, currentUser}) => {
     if (!post) {
         return <p>No Post</p>;
     }
@@ -55,24 +55,46 @@ const PostItem = ({post, onOpenComment }) => {
                     </header>
 
                     <footer className="leading-none p-2 md:p-4">
-                        <Link
-                            className="flex items-center no-underline hover:underline text-white"
-                            href={`user/${post.author.id}`}>
-                            {post.author.profile.avatar_url ? (
-                                <Image
-                                    src={post.author.profile.avatar_url}
-                                    width={50}
-                                    height={50}
-                                    className="h-12 w-12 rounded-full"
-                                    alt={post.author.username}
-                                />
-                            ) : (
-                                <PostsIcon className="h-12 w-12 rounded-full"/>
-                            )}
-                            <p className="ml-2 text-sm test-white">
-                                {post.author.username}
-                            </p>
-                        </Link>
+                        {
+                            (post.author.id != currentUser) ? (
+                                    <Link className="flex items-center no-underline hover:underline text-white"
+                                          href={`user/${post.author.id}`}>
+                                        {post.author.profile.avatar_url ? (
+                                            <Image
+                                                src={post.author.profile.avatar_url}
+                                                width={50}
+                                                height={50}
+                                                className="h-12 w-12 rounded-full"
+                                                alt={post.author.username}
+                                            />
+                                        ) : (
+                                            <PostsIcon className="h-12 w-12 rounded-full"/>
+                                        )}
+                                        <p className="ml-2 text-sm test-white">
+                                            {post.author.username}
+                                        </p>
+                                    </Link>
+                                ) :
+                                (
+                                    <div className="flex items-center no-underline text-white">
+                                        {post.author.profile.avatar_url ? (
+                                            <Image
+                                                src={post.author.profile.avatar_url}
+                                                width={50}
+                                                height={50}
+                                                className="h-12 w-12 rounded-full"
+                                                alt={post.author.username}
+                                            />
+                                        ) : (
+                                            <PostsIcon className="h-12 w-12 rounded-full"/>
+                                        )}
+                                        <p className="ml-2 text-sm test-white">
+                                            {post.author.username}
+                                        </p>
+                                    </div>
+                                )
+                        }
+
                         <div className="flex items-end">
                             <div className="no-underline cursor-pointer flex items-center flex-col" onClick={like}>
                                 <LikeIcon className={`h-12 w-12  ${isLike ? 'text-red-800' : ''}`}/>

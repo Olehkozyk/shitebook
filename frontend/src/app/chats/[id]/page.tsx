@@ -64,7 +64,7 @@ const ChatPage: React.FC = () => {
     useEffect(() => {
         if (currentUser && id && !ws.current) {
             const token = Cookies.get('shite_access_token');
-            const socket = new WebSocket(`ws://localhost:8000/ws/chats/${id}/?token=${token}`);
+            const socket = new WebSocket(`${process.env.NEXT_PUBLIC_WS}/chats/${id}/?token=${token}`);
             ws.current = socket;
 
             socket.onopen = () => console.log('WebSocket connection established');

@@ -34,8 +34,8 @@ const ListUsers = ({users}) => {
                                     <p className="text-sm font-semibold leading-6 text-indigo-600">
                                         {user.first_name} {user.last_name}
                                     </p>
-                                    {user.chat_id &&
-                                        <Link href={'chats/'+user.chat_id}>
+                                    {user.chat && user.chat.id &&
+                                        <Link href={`chats/${user.chat.id}?title=${encodeURIComponent(user.chat.title)}`}>
                                             <ChatIcon className="text-white w-7" />
                                         </Link>}
                                 </div>

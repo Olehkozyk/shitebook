@@ -12,7 +12,7 @@ interface Chat {
 }
 
 async function fetchChats(token: string) {
-    const response = await fetch('http://127.0.0.1:8000/api/chats/', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chats/`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -59,7 +59,7 @@ export default function Page() {
             }
         };
 
-        fetchCurrentUser();
+        fetchCurrentUser().then(r => r);
 
         fetchChats(token)
             .then((fetchedChats) => {

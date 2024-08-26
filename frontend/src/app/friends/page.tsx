@@ -15,6 +15,7 @@ export default function Friends() {
             let response = await fetch(`/api/user/friends/friends-list?token=${token}`, {method: 'GET'})
             response = await response.json();
             if (response.status) {
+                console.log(response.data, 'response.data')
                 setListFriend(response.data)
             }
 

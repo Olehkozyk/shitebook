@@ -9,8 +9,30 @@ const PostsList = ({posts}) => {
     }
     const [openComment, setOpenComment] = useState(false);
     const [popupCommentData, setPopupData] = useState([]);
+    const [currentUser, setCurrentUser] = useState(0);
     const [idPostCommentPopup, setIdPostCommentPopup] = useState(0);
     const token = Cookies.get('shite_access_token');
+    const fetchCurrentUser = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile/`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setCurrentUser(data.data.id);
+            } else {
+                console.error('Failed to fetch user profile');
+            }
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+        }
+    };
+
+    fetchCurrentUser().then(r => r);
     const handleOpenComment = async (postId) => {
         try {
             let response = await fetch(`api/posts/comments?token=${token}&postId=${postId}`, {method: 'GET'})
@@ -57,7 +79,7 @@ const PostsList = ({posts}) => {
             <div className="container my-3 mx-auto">
                 <div className="flex flex-wrap -mx-1 lg:-mx-4">
                     {posts.map(post => (
-                        <PostItem key={post.id} post={post} onOpenComment={handleOpenComment} />
+                        <PostItem key={post.id} post={post} currentUser={currentUser} onOpenComment={handleOpenComment} />
                     ))}
                 </div>
                 {openComment && <CommentPopup idPostComment={idPostCommentPopup}
