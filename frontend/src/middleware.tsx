@@ -15,5 +15,6 @@ export const config = {
         '/posts/:path*',
         '/chats/:path*',
         '/search/:path*',
+        '/user/:path*',
     ],
 };

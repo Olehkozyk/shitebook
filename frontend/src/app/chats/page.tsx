@@ -28,7 +28,6 @@ async function fetchChats(token: string) {
 
 export default function Page() {
     const [chats, setChats] = useState<Chat[]>([]);
-    const [currentUser, setCurrentUser] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -38,28 +37,6 @@ export default function Page() {
             console.error('No access token found');
             return;
         }
-
-        const fetchCurrentUser = async () => {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile/`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setCurrentUser(data.data.id);
-                } else {
-                    console.error('Failed to fetch user profile');
-                }
-            } catch (error) {
-                console.error('Error fetching user profile:', error);
-            }
-        };
-
-        fetchCurrentUser().then(r => r);
 
         fetchChats(token)
             .then((fetchedChats) => {
@@ -87,9 +64,7 @@ export default function Page() {
             <div className="p-4 border-2 border-dashed rounded-lg border-gray-700">
                 <h1 className="mb-4">Chat toilets</h1>
                 <ul>
-                    {chats
-                        .filter((chat) => chat.participants.includes(currentUser!))
-                        .map((chat) => (
+                    {chats.map((chat) => (
                             <li key={chat.id} className="mb-4 no-underline">
                                 <Link href={`/chats/${chat.id}?title=${encodeURIComponent(chat.title)}`} className="flex justify-between items-center no-underline text-xs transition-opacity hover:opacity-60">
                                     <span>{chat.title}</span>
