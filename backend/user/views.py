@@ -6,12 +6,13 @@ from .models import UserProfile, FriendRequest, UserFriend, Chat
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
 from .pagination import CustomPaginationUsers
 from .serializers import (
     LoginSerializer,
     RegisterSerializer,
     UserSerializer,
-    FriendRequestSerializer,
+    FriendRequestSerializer, UserProfilesSerializer,
 )
 from rest_framework import status, generics
 
@@ -251,3 +252,32 @@ class UserListView(generics.ListAPIView):
     def get_queryset(self):
         current_user = self.request.user
         return User.objects.all().select_related('profile').exclude(id=current_user.id).order_by('id')
+
+
+class UserProfileUpdateView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        user_serializer = self.get_serializer(user, data=request.data, partial=True)
+        user_serializer.is_valid(raise_exception=True)
+
+        self.perform_update(user_serializer)
+
+        avatar = request.data.get('avatar')
+
+        if isinstance(avatar, (InMemoryUploadedFile, TemporaryUploadedFile)):
+            profile = user.profile
+            profile_serializer = UserProfilesSerializer(profile, data={'avatar': avatar}, partial=True)
+            profile_serializer.is_valid(raise_exception=True)
+            profile_serializer.save()
+
+        return Response(user_serializer.data, status=status.HTTP_200_OK)
+
+    def perform_update(self, serializer):
+        serializer.save()
+

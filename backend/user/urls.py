@@ -11,7 +11,8 @@ from .views import (
     AcceptFriendRequestView,
     IsFriendView,
     RemoveFriendView,
-    FriendListView
+    FriendListView,
+    UserProfileUpdateView
 )
 
 urlpatterns = [
@@ -20,6 +21,7 @@ urlpatterns = [
 
     # profile loggined user
     path('/profile/', CurrentUserDetailView.as_view(), name='user-profile'),
+    path('/profile/update/', UserProfileUpdateView.as_view(), name='user-update'),
 
     # list users
     path('/list/', UserListView.as_view(), name='user-list'),

@@ -34,6 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
         return {'id': chat.id, 'title': chat.title} if chat else None
 
 
+
 class UserSerializerRequestFriend(serializers.ModelSerializer):
     profile = UserProfilesSerializer()
 
