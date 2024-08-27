@@ -12,7 +12,6 @@ export default function Home() {
             try {
                 let response = await fetch(`/api/search/posts?token=${token}`, {method: 'GET'})
                 response = await response.json();
-                console.log(response, 'response')
                 if (response.status) setPosts(response.data.results);
             } catch (error) {
                 console.log(error)

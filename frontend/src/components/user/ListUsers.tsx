@@ -24,7 +24,10 @@ const ListUsers = ({users}) => {
                                             alt={user.username}
                                         />
                                     ) : (
-                                        <PostsIcon className="h-16 w-16 rounded-full"/>
+                                        <div
+                                            className='flex items-center justify-center bg-teal-50 h-[40px] w-[40px] rounded-full'>
+                                            <PostsIcon className="h-12 w-12 rounded-full"/>
+                                        </div>
                                     )}
                                 </Link>
                                 <div>

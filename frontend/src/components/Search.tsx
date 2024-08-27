@@ -52,7 +52,6 @@ const SearchComponent = () => {
                             break;
                         case 'users':
                             setResultsPosts([])
-                            console.log(response.data.results, 'response.data.results')
                             setResultsUser(response.data.results)
                             break;
                         default:

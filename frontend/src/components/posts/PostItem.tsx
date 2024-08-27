@@ -71,7 +71,10 @@ const PostItem = ({post, onOpenComment, currentUser}) => {
                                                         alt={post.author.username}
                                                     />
                                                 ) : (
-                                                    <PostsIcon className="h-12 w-12 rounded-full"/>
+                                                    <div
+                                                        className='flex items-center justify-center bg-teal-50 h-[40px] w-[40px] rounded-full'>
+                                                        <PostsIcon className="h-12 w-12 rounded-full"/>
+                                                    </div>
                                                 )}
                                                 <p className="ml-2 text-sm test-white">
                                                     {post.author.username}
@@ -89,7 +92,10 @@ const PostItem = ({post, onOpenComment, currentUser}) => {
                                                         alt={post.author.username}
                                                     />
                                                 ) : (
-                                                    <PostsIcon className="h-12 w-12 rounded-full"/>
+                                                    <div
+                                                        className='flex items-center justify-center bg-teal-50 h-[40px] w-[40px] rounded-full'>
+                                                        <PostsIcon className="h-12 w-12 rounded-full"/>
+                                                    </div>
                                                 )}
                                                 <p className="ml-2 text-sm test-white">
                                                     {post.author.username}
@@ -101,15 +107,20 @@ const PostItem = ({post, onOpenComment, currentUser}) => {
                                     {formatDate(post.created_at)}
                                 </p></div>
 
-                            <div className="flex items-end">
+                            <div className="flex items-end justify-end">
                                 <div className="no-underline cursor-pointer flex items-center flex-col" onClick={like}>
-                                    <LikeIcon className={`h-12 w-12  ${isLike ? 'text-red-800' : ''}`}/>
+                                    <div className='h-[40px] w-[40px]'>
+                                        <LikeIcon
+                                            className={`object-cover object-center  ${isLike ? 'text-red-800' : ''}`}/>
+                                    </div>
                                     <span>{countLike}</span>
                                 </div>
                                 <div
                                     onClick={() => onOpenComment(post.id)}
-                                    className="no-underline cursor-pointer flex items-center flex-col">
-                                    <CommentsIcon className={`h-12 w-12 max-h-7 mb-1`}/>
+                                    className="no-underline cursor-pointer flex items-center flex-col gap-2">
+                                    <div className='h-[20px] w-[20px]'>
+                                        <CommentsIcon className={`object-cover object-center`}/>
+                                    </div>
                                     <span>{post.comments_count}</span>
                                 </div>
                             </div>

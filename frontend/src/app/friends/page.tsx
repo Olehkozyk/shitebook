@@ -15,7 +15,6 @@ export default function Friends() {
             let response = await fetch(`/api/user/friends/friends-list?token=${token}`, {method: 'GET'})
             response = await response.json();
             if (response.status) {
-                console.log(response.data, 'response.data')
                 setListFriend(response.data)
             }
 
@@ -25,13 +24,11 @@ export default function Friends() {
     };
 
     const fetchRequestFriendsList = async () => {
-        console.log('fetchRequestFriendsList')
         try {
             let response = await fetch(`/api/user/friends/request-friend?token=${token}`, {method: 'GET'})
             response = await response.json();
             if (response.status) {
                 setListRequestFriend(response.data)
-                console.log(response.data);
             }
         } catch (error) {
             console.log(error)

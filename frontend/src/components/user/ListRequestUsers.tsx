@@ -16,7 +16,8 @@ const ListRequestUsers = ({users, addRemoveRequestFriend}) => {
                 <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
                     {users.length > 0 && <ul role="list" className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
                         {users.map((user) => (
-                            <li key={user.from_user.id} className="flex items-center gap-x-6">
+                            <li key={user.from_user.id} className="flex items-center justify-between gap-x-6">
+                                <div className='flex items-center gap-4'>
                                 <Link href={'user/' + user.from_user.id}>
                                     {user?.from_user?.profile?.avatar_url ? (
                                         <Image
@@ -27,23 +28,24 @@ const ListRequestUsers = ({users, addRemoveRequestFriend}) => {
                                             alt={user?.from_user.username}
                                         />
                                     ) : (
-                                        <PostsIcon className="h-16 w-16 rounded-full"/>
+                                        <div
+                                            className='flex items-center justify-center bg-teal-50 h-[40px] w-[40px] rounded-full'>
+                                            <PostsIcon className="h-12 w-12 rounded-full"/>
+                                        </div>
                                     )}
                                 </Link>
-                                <div>
-                                    <h3 className="text-base text-white font-semibold leading-7 tracking-tight mb-3">
-                                        {user.from_user.username}
-                                    </h3>
-                                    <p className="text-sm font-semibold leading-6 text-indigo-600">
-                                        {user.from_user.first_name} {user.from_user.last_name}
-                                    </p>
+                                <h3 className="text-base text-white font-semibold leading-7 tracking-tight">
+                                    {user.from_user.username}
+                                </h3>
+                                </div>
+                                <div className='flex items-stretch justify-stretch flex-col gap-4'>
                                     <button
-                                        className="text-sm font-semibold leading-6 text-green-600 flex items-center mb-4"
+                                        className="text-xs w-full rounded-lg bg-teal-500 p-2 font-semibold leading-6 text-teal-950 flex justify-between items-center"
                                         onClick={() => addRemoveRequestFriend(user.from_user.id)}>
-                                        Accept friend<IconMark className="text-green-600 w-5 ms-4"/>
+                                        Accept friend<IconMark className="text-teal-950 w-5 ms-4"/>
                                     </button>
                                     <button
-                                        className="text-sm font-semibold leading-6 text-red-800 flex items-center"
+                                        className="text-sm rounded-lg bg-rose-300 p-2 font-semibold leading-6 text-red-800 flex justify-between items-center"
                                         onClick={() => addRemoveRequestFriend(user.from_user.id, false)}>
                                         Remove request<IconClose className="text-red-800 w-5 ms-4"/>
                                     </button>

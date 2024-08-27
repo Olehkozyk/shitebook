@@ -3,8 +3,7 @@ import {NextResponse} from "next/server";
 export async function POST(request: Request) {
     try {
         const data = await request.json()
-        console.log(data)
-        console.log('test')
+
         if(!data.token) throw new Error('Token is missing');
         if(!data.userId) throw new Error('User id is missing');
         let response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/add-friend/`, {

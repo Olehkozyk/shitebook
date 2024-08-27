@@ -15,7 +15,7 @@ export default function Page({params}: { params: { slug: string } }) {
             try {
                 let response = await fetch(`/api/user/profile?token=${token}&userId=${params.slug}`, {method: 'GET'})
                 response = await response.json();
-                console.log(response, 'fetchUser')
+
                 if (response.status) {
                     setUser(response.data)
                     setRequestFriend(response.data.friend_request_sent)
@@ -31,7 +31,7 @@ export default function Page({params}: { params: { slug: string } }) {
                 response = await response.json();
 
                 if (response.status) {
-                    console.log(response, 'fetchIsRequest')
+
                     response.data.forEach(item => {
                         if(String(item.from_user.id) === String(params.slug)) {
                             setAcceptFriend(true);
@@ -49,7 +49,7 @@ export default function Page({params}: { params: { slug: string } }) {
                 response = await response.json();
 
                 if (response.status) {
-                    console.log(response)
+
                     setIsFriend(response.is_friend);
                 }
             } catch (error) {
